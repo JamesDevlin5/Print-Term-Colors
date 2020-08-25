@@ -1,19 +1,25 @@
 use termion::{color, style};
 
-/// Prints a single background color along a group of three space characters.
+const BLOCK_CHARS: &str = "   ";
+
+/// Gets a single background color along a group of three space characters.
 /// This will effectively display a block of empty space that is colored by the supplied color.
-fn pr_color(c: &dyn color::Color) {
-    print!("{}   ", color::Bg(c));
+/// Returns: A string, formatted with the color provided as the background of the block character
+/// string.
+fn get_color(c: &dyn color::Color) -> String {
+    format!("{}{}", color::Bg(c), BLOCK_CHARS)
 }
 
-/// Prints a single line in accordance with the colors provided.
+/// Gets a single line in accordance with the colors provided.
 /// This function will ensure proper formatting of the line printed, included prefixed padding, printing of each color in the collection properly, and cleaning up after the line if finished.
-fn pr_line(cvec: &Vec<&dyn color::Color>) {
-    print!("   ");
+/// Returns: A string, formatted with each color provided coloring the background of the block
+/// characters.
+fn get_line(cvec: &Vec<&dyn color::Color>) -> String {
+    let mut s = String::with_capacity(cvec.len() * BLOCK_CHARS.len());
     for c in cvec {
-        pr_color(c);
+        s.push_str(get_color(c).as_str());
     }
-    println!("{}", style::Reset);
+    s
 }
 
 fn main() {
@@ -41,6 +47,6 @@ fn main() {
         &color::LightWhite,
     ];
 
-    pr_line(&colors);
-    pr_line(&lcolors);
+    println!("{}{}{}", BLOCK_CHARS, get_line(&colors), style::Reset);
+    println!("{}{}{}", BLOCK_CHARS, get_line(&lcolors), style::Reset);
 }
