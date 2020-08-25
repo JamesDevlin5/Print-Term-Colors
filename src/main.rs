@@ -1,6 +1,6 @@
 use termion::{color, style};
 
-const BLOCK_CHARS: &str = "   ";
+pub const BLOCK_CHARS: &str = "   ";
 
 /// Gets a single background color along a group of three space characters.
 /// This will effectively display a block of empty space that is colored by the supplied color.
@@ -33,6 +33,85 @@ fn final_format(colors: Vec<&dyn color::Color>) -> String {
 /// Prints the vector of colors provided, as a single formatted line of block characters.
 fn pr_line(colors: Vec<&dyn color::Color>) {
     println!("{}", final_format(colors));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_color() {
+        {
+            let mut s = String::new();
+            s.push_str(format!("{}", color::Bg(color::Red)).as_str());
+            s.push_str(BLOCK_CHARS);
+            assert_eq!(get_color(&color::Red), s);
+        }
+        {
+            let mut s = String::new();
+            s.push_str(format!("{}", color::Bg(color::Blue)).as_str());
+            s.push_str(BLOCK_CHARS);
+            assert_eq!(get_color(&color::Blue), s);
+        }
+        {
+            let mut s = String::new();
+            s.push_str(format!("{}", color::Bg(color::Green)).as_str());
+            s.push_str(BLOCK_CHARS);
+            assert_eq!(get_color(&color::Green), s);
+        }
+    }
+    #[test]
+    fn test_get_line() {
+        let mut s = String::new();
+        s.push_str(format!("{}", color::Bg(color::Red)).as_str());
+        s.push_str(BLOCK_CHARS);
+        assert_eq!(get_line(&vec![&color::Red]), s);
+        s.push_str(format!("{}", color::Bg(color::Yellow)).as_str());
+        s.push_str(BLOCK_CHARS);
+        assert_eq!(get_line(&vec![&color::Red, &color::Yellow]), s);
+        s.push_str(format!("{}", color::Bg(color::Cyan)).as_str());
+        s.push_str(BLOCK_CHARS);
+        assert_eq!(
+            get_line(&vec![&color::Red, &color::Yellow, &color::Cyan]),
+            s
+        );
+    }
+
+    #[test]
+    fn test_final_format() {
+        let mut s = String::new();
+        s.push_str(BLOCK_CHARS);
+
+        s.push_str(format!("{}", color::Bg(color::Red)).as_str());
+        s.push_str(BLOCK_CHARS);
+
+        let mut s1 = s.clone();
+        s1.push_str(format!("{}", style::Reset).as_str());
+        assert_eq!(final_format(vec![&color::Red]), s1);
+
+        s.push_str(format!("{}", color::Bg(color::Yellow)).as_str());
+        s.push_str(BLOCK_CHARS);
+
+        let mut s2 = s.clone();
+        s2.push_str(format!("{}", style::Reset).as_str());
+        assert_eq!(
+            format!("{}", final_format(vec![&color::Red, &color::Yellow])),
+            s2
+        );
+
+        s.push_str(format!("{}", color::Bg(color::Cyan)).as_str());
+        s.push_str(BLOCK_CHARS);
+
+        let mut s3 = s.clone();
+        s3.push_str(format!("{}", style::Reset).as_str());
+        assert_eq!(
+            format!(
+                "{}",
+                final_format(vec![&color::Red, &color::Yellow, &color::Cyan])
+            ),
+            s3
+        );
+    }
 }
 
 fn main() {
