@@ -22,8 +22,10 @@ fn get_line(cvec: &Vec<&dyn color::Color>) -> String {
     s
 }
 
-fn pr_line(l: String) {
-    println!("{}{}{}", BLOCK_CHARS, l, style::Reset);
+/// Prints the vector of colors provided, as a single formatted line of block characters.
+/// This function will also ensure that the coloring is reset after the print call.
+fn pr_line(colors: Vec<&dyn color::Color>) {
+    println!("{}{}{}", BLOCK_CHARS, get_line(&colors), style::Reset);
 }
 
 fn main() {
@@ -51,6 +53,6 @@ fn main() {
         &color::LightWhite,
     ];
 
-    pr_line(get_line(&colors));
-    pr_line(get_line(&lcolors));
+    pr_line(colors);
+    pr_line(lcolors);
 }
