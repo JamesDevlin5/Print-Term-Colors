@@ -22,6 +22,10 @@ fn get_line(cvec: &Vec<&dyn color::Color>) -> String {
     s
 }
 
+fn pr_line(l: String) {
+    println!("{}{}{}", BLOCK_CHARS, l, style::Reset);
+}
+
 fn main() {
     // A collection of all the regular colors
     let colors: Vec<&dyn color::Color> = vec![
@@ -47,6 +51,6 @@ fn main() {
         &color::LightWhite,
     ];
 
-    println!("{}{}{}", BLOCK_CHARS, get_line(&colors), style::Reset);
-    println!("{}{}{}", BLOCK_CHARS, get_line(&lcolors), style::Reset);
+    pr_line(get_line(&colors));
+    pr_line(get_line(&lcolors));
 }
