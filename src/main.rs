@@ -22,10 +22,17 @@ fn get_line(cvec: &Vec<&dyn color::Color>) -> String {
     s
 }
 
+/// Formats the vector of colors provided, creating a string that is prefixed with an unformatted
+/// block of characters, followed by a series of changes in background color, based on the colors in
+/// the vector, and a grouping of block characters. Finally, the terminal styling will be reset to
+/// ensure no issues after.
+fn final_format(colors: Vec<&dyn color::Color>) -> String {
+    format!("{}{}{}", BLOCK_CHARS, get_line(&colors), style::Reset)
+}
+
 /// Prints the vector of colors provided, as a single formatted line of block characters.
-/// This function will also ensure that the coloring is reset after the print call.
 fn pr_line(colors: Vec<&dyn color::Color>) {
-    println!("{}{}{}", BLOCK_CHARS, get_line(&colors), style::Reset);
+    println!("{}", final_format(colors));
 }
 
 fn main() {
